@@ -23,7 +23,7 @@ class Books(db.Model):
     text_reviews_count = db.Column(db.Integer, nullable=False)
     publication_date = db.Column(db.String, nullable=False)
     publisher = db.Column(db.String, nullable=False)
-    stock = db.Column(db.Integer, nullable=False)
+    stock = db.Column(db.Integer, nullable=False, default=0)
 
 
 class Members(db.Model):
@@ -40,8 +40,8 @@ class Transactions(db.Model):
         'books.id'), nullable=False)
     member_id = db.Column(db.Integer, db.ForeignKey(
         'members.id'), nullable=False)
-    issue_date = db.Column(db.DateTime, nullable=False)
-    return_date = db.Column(db.DateTime, nullable=True)
+    issue_date = db.Column(db.Date, nullable=False)
+    return_date = db.Column(db.Date, nullable=True)
     rent_fee = db.Column(db.Float, default=0.0)
 
 
@@ -91,6 +91,10 @@ def add_transaction():
 
     member.outstanding_debt += transaction.rent_fee
     book.stock -= 1
+
+    if book.stock < 0:
+        db.session.rollback()
+        return {'error': "Not enough stock"}, 409
 
     db.session.commit()
 
