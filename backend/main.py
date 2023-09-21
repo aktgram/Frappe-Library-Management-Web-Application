@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, update
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 import requests
@@ -23,6 +23,7 @@ class Books(db.Model):
     text_reviews_count = db.Column(db.Integer, nullable=False)
     publication_date = db.Column(db.String, nullable=False)
     publisher = db.Column(db.String, nullable=False)
+    stock = db.Column(db.Integer, nullable=False)
 
 
 class Members(db.Model):
@@ -52,6 +53,19 @@ def add_book():
     db.session.add(book)
     db.session.commit()
     return {'id': book.id}, 201
+
+
+@ app.route('/books/stock', methods=['POST'])
+def add_book_stock():
+    ''' Add a new book '''
+    data = request.get_json()
+    book_id = data.get('book_id')
+    stock = data.get('stock')
+    stmt = update(Books).where(
+        Books.id == book_id).values({Books.stock: stock})
+    db.session.execute(stmt)
+    db.session.commit()
+    return {'result': f'Stock update successfull for book_id: {book_id} to {stock}'}, 201
 
 
 @ app.route('/members', methods=['POST'])
