@@ -2,9 +2,9 @@ from flask import Flask
 from flask_migrate import Migrate
 
 from .models import db
-from .books.routes import books
-from .members.routes import members
-from .transactions.routes import transactions
+from .routes.books import books
+from .routes.members import members
+from .routes.transactions import transactions
 
 app = Flask(__name__)
 app.register_blueprint(books)
