@@ -19,12 +19,18 @@ class Books(db.Model):
     publisher = db.Column(db.String, nullable=False)
     stock = db.Column(db.Integer, nullable=False, default=0)
 
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
 
 class Members(db.Model):
     ''' Member Class '''
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    outstanding_debt = db.Column(db.Float, default=0.0)
+    outstanding_debt = db.Column(db.Numeric(10, 2), default=0.0)
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 class Transactions(db.Model):
@@ -36,4 +42,7 @@ class Transactions(db.Model):
         'members.id'), nullable=False)
     issue_date = db.Column(db.Date, nullable=False)
     return_date = db.Column(db.Date, nullable=True)
-    rent_fee = db.Column(db.Float, default=0.0)
+    rent_fee = db.Column(db.Numeric(10, 2), default=0.0)
+
+    def to_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
