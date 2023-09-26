@@ -1,48 +1,15 @@
+from models import db, Books, Members, Transactions
 from sqlalchemy import func, update
 from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import requests
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     'postgresql://admin:password@localhost:5432/library?sslmode=disable'
-db = SQLAlchemy(app)
 
-
-class Books(db.Model):
-    ''' Book Class '''
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String, nullable=False)
-    authors = db.Column(db.String, nullable=False)
-    average_rating = db.Column(db.Float, nullable=False)
-    isbn = db.Column(db.String, nullable=False)
-    isbn13 = db.Column(db.String, nullable=False)
-    language_code = db.Column(db.String, nullable=False)
-    num_pages = db.Column(db.Integer, nullable=False)
-    ratings_count = db.Column(db.Integer, nullable=False)
-    text_reviews_count = db.Column(db.Integer, nullable=False)
-    publication_date = db.Column(db.String, nullable=False)
-    publisher = db.Column(db.String, nullable=False)
-    stock = db.Column(db.Integer, nullable=False, default=0)
-
-
-class Members(db.Model):
-    ''' Member Class '''
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
-    outstanding_debt = db.Column(db.Float, default=0.0)
-
-
-class Transactions(db.Model):
-    ''' Transaction Class '''
-    id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.Integer, db.ForeignKey(
-        'books.id'), nullable=False)
-    member_id = db.Column(db.Integer, db.ForeignKey(
-        'members.id'), nullable=False)
-    issue_date = db.Column(db.Date, nullable=False)
-    return_date = db.Column(db.Date, nullable=True)
-    rent_fee = db.Column(db.Float, default=0.0)
+db.init_app(app)
+migrate = Migrate(app, db)
 
 
 @ app.route('/books', methods=['POST'])
@@ -186,15 +153,6 @@ def import_all_books():
             i += 1
 
     return {'no_api_reqs': i}, 201
-
-
-@app.route('/library/init')
-def init_db():
-    ''' Initialize the database '''
-    db.create_all()  # create the tables
-    db.session.commit()
-
-    return {}, 201
 
 
 if __name__ == '__main__':
