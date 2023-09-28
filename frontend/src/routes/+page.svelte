@@ -10,7 +10,7 @@
 			<h2 class="h2">Frappe Library Management System</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
-			<button type="button" class="btn variant-filled">Add Member</button>
+			<button type="button" class="btn rounded-full variant-filled-secondary">Add Member</button>
 			<LightSwitch />
 		</svelte:fragment>
 	</AppBar>

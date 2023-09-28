@@ -9,16 +9,10 @@
 	initializeStores();
 	const drawerStore = getDrawerStore();
 
-	/** @type {"right" | "left" | "top" | "bottom" | undefined} */
-	const issueDrawerPosition = 'right';
-
-	/**
-	 * @param {{ id: number, title: any; authors: any; isbn: any; isbn13: any; language_code: any; num_pages: any; ratings_count: any; text_reviews_count: any; publication_date: any; publisher: any; stock: any; }} book
-	 */
 	function openIssueDrawer(book) {
 		const drawerSettings = {
 			id: 'issue',
-			position: issueDrawerPosition,
+			position: 'right',
 			meta: book
 		};
 		drawerStore.open(drawerSettings);
