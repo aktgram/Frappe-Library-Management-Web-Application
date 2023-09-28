@@ -8,6 +8,16 @@ from ..models import db, Books
 books = Blueprint('books', __name__)
 
 
+@books.route('/books', methods=['GET'])
+def get_books():
+    ''' Get books ordered by id with pagination '''
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    books_list = Books.query.order_by(Books.id).paginate(
+        page=page, per_page=per_page, error_out=False)
+    return {'books': [book.to_dict() for book in books_list.items]}, 200
+
+
 @ books.route('/books/<int:book_id>', methods=['GET'])
 def get_book(book_id):
     ''' Get a book by id '''
