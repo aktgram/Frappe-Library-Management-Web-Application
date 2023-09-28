@@ -34,9 +34,12 @@
 </script>
 
 <main>
-	<div class="grid grid-cols-2 mb-5">
+	<div class="flex mb-5 items-center justify-between">
 		<h3 class="h3">Some Available Books</h3>
-		<button type="button" class="btn variant-filled" on:click={openReturnDrawer}>Return Book</button
+		<button
+			type="button"
+			class="btn rounded-full variant-filled-secondary"
+			on:click={openReturnDrawer}>Return Book</button
 		>
 	</div>
 	<div
