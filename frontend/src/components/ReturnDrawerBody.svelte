@@ -27,7 +27,7 @@
 				<span>Transaction ID:</span>
 				<input
 					id="transactionId"
-					class="input"
+					class="input rounded-full px-3"
 					type="text"
 					placeholder="Transaction Reference Number"
 					bind:value={transactionId}

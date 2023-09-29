@@ -4,12 +4,6 @@
 	export let openDrawer;
 </script>
 
-<!-- For Ratings star icon -->
-<link
-	rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-/>
-
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <!-- svelte-ignore a11y-interactive-supports-focus -->
 <div

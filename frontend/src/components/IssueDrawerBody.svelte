@@ -90,7 +90,7 @@
 				<span>Member ID:</span>
 				<input
 					id="memberId"
-					class="input mb-10"
+					class="input mb-10 rounded-full px-3"
 					type="text"
 					placeholder="Enter Member ID"
 					required
@@ -99,7 +99,7 @@
 
 			<label for="issueDate" class="label mt-10">
 				<span>Issue Date:</span>
-				<input id="issueDate" class="input mb-10" type="date" required />
+				<input id="issueDate" class="input mb-10 rounded-full px-3" type="date" required />
 			</label>
 
 			<button type="submit" class="btn rounded-full variant-filled-secondary mt-10"
