@@ -1,5 +1,6 @@
 <script>
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 
 	const drawerStore = getDrawerStore();
 	const book = $drawerStore.meta;
@@ -18,6 +19,17 @@
 		// append the paragraph to the form
 		event.target.appendChild(p);
 	}
+
+	onMount(() => {
+		// set issue date to default to today
+		let today = new Date();
+		let day = String(today.getDate()).padStart(2, '0');
+		let month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+		let year = today.getFullYear();
+
+		today = year + '-' + month + '-' + day;
+		document.getElementById('issueDate').value = today;
+	});
 </script>
 
 <main>
@@ -74,29 +86,30 @@
 		</table>
 
 		<form on:submit={issueBook}>
-			<label for="memberId">Member ID:</label>
-			<input id="memberId" type="text" required class="inputField" />
+			<label for="memberId" class="label">
+				<span>Member ID:</span>
+				<input
+					id="memberId"
+					class="input mb-10"
+					type="text"
+					placeholder="Enter Member ID"
+					required
+				/>
+			</label>
 
-			<label for="issueDate">Issue Date:</label>
-			<input id="issueDate" type="date" required class="dateField" />
+			<label for="issueDate" class="label mt-10">
+				<span>Issue Date:</span>
+				<input id="issueDate" class="input mb-10" type="date" required />
+			</label>
 
-			<button type="submit" class="btn rounded-full variant-filled-secondary">Issue Book</button>
+			<button type="submit" class="btn rounded-full variant-filled-secondary mt-10"
+				>Issue Book</button
+			>
 		</form>
 	</div>
 </main>
 
 <style>
-	.inputField,
-	.dateField {
-		margin-bottom: 10px;
-		color: black;
-		background-color: white;
-	}
-
-	.dateField {
-		margin-bottom: 20px;
-	}
-
 	.card {
 		width: 700px;
 		height: 100vh;

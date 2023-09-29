@@ -23,8 +23,17 @@
 <main>
 	<div id="return-book-card" class="card p-20">
 		<form>
-			<label for="transactionId">Transaction ID:</label>
-			<input id="transactionId" type="text" bind:value={transactionId} required />
+			<label for="transactionId" class="label">
+				<span>Transaction ID:</span>
+				<input
+					id="transactionId"
+					class="input"
+					type="text"
+					placeholder="Transaction Reference Number"
+					bind:value={transactionId}
+					required
+				/>
+			</label>
 
 			<button
 				type="button"
