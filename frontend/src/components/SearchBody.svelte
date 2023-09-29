@@ -1,17 +1,74 @@
 <script>
 	import BookCard from './BookCard.svelte';
+	import { PUBLIC_API_URL } from '$env/static/public';
 
 	export let openIssueDrawer;
-	import { books } from './books';
+	export let searchTitle;
+	export let searchAuthor;
+
+	let books = [];
+	let pageNumber = 1;
+
+	async function searchBooks() {
+		const response = await fetch(
+			PUBLIC_API_URL +
+				`/books/search?title=${searchTitle}&authors=${searchAuthor}&page=${pageNumber}`
+		);
+		if (response.ok) {
+			const json = await response.json();
+			books = json.books;
+		} else {
+			console.error('HTTP-Error: ' + response.status);
+			alert('Server Down!!');
+		}
+	}
+
+	function nextPage() {
+		// only if page end not reached
+		if (books.length == 10) {
+			books = [];
+			pageNumber++;
+			searchBooks();
+		}
+	}
+
+	function previousPage() {
+		// only if page beginning not reached
+		if (pageNumber > 1) {
+			books = [];
+			pageNumber--;
+			searchBooks();
+		}
+	}
+
+	// update search on value change, and update page number on new search
+	$: searchTitle, searchAuthor, (pageNumber = 1), searchBooks();
 </script>
 
 <main>
-	<h3 class="h3 my-8">Search Results</h3>
+	<div class="flex justify-between items-center my-8">
+		<h3 class="h3 my-8">Search Results for {searchTitle} {searchAuthor}</h3>
+		<div class="flex items-center">
+			<button on:click={previousPage} class="btn w-1 rounded-full variant-filled-secondary">
+				<i class="fas fa-chevron-left" />
+			</button>
+			<span class="mx-4 flex justify-center items-center w-6">{pageNumber}</span>
+			<button on:click={nextPage} class="btn w-1 rounded-full variant-filled-secondary">
+				<i class="fas fa-chevron-right" />
+			</button>
+		</div>
+	</div>
 	<div
 		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xxl:grid-cols-6 gap-20 auto-cols-min"
 	>
-		{#each books as book (book.id)}
-			<BookCard {book} openDrawer={openIssueDrawer} />
-		{/each}
+		{#if books.length === 0}
+			{#each { length: 5 } as _, __}
+				<BookCard placeholder={true} />
+			{/each}
+		{:else}
+			{#each books as book (book.id)}
+				<BookCard {book} openDrawer={openIssueDrawer} placeholder={false} />
+			{/each}
+		{/if}
 	</div>
 </main>

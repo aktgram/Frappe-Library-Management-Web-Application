@@ -1,22 +1,41 @@
 <script>
+	import { onMount } from 'svelte';
 	import BookCard from './BookCard.svelte';
+	import { PUBLIC_API_URL } from '$env/static/public';
 
 	export let openIssueDrawer;
-	import { books } from './books';
 
+	let books = [];
 	let pageNumber = 1;
 
+	async function fetchBooks() {
+		const response = await fetch(PUBLIC_API_URL + '/books?page=' + pageNumber);
+		if (response.ok) {
+			const json = await response.json();
+			books = json.books;
+		} else {
+			console.error('HTTP-Error: ' + response.status);
+			alert('Server Down!!');
+		}
+	}
+
 	function nextPage() {
+		books = [];
 		pageNumber++;
-		// Add logic to fetch the next page of books
+		fetchBooks();
 	}
 
 	function previousPage() {
 		if (pageNumber > 1) {
+			books = [];
 			pageNumber--;
-			// Add logic to fetch the previous page of books
+			fetchBooks();
 		}
 	}
+
+	onMount(() => {
+		fetchBooks();
+	});
 </script>
 
 <main>
@@ -35,8 +54,14 @@
 	<div
 		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xxl:grid-cols-6 gap-20 auto-cols-min"
 	>
-		{#each books as book (book.id)}
-			<BookCard {book} openDrawer={openIssueDrawer} />
-		{/each}
+		{#if books.length === 0}
+			{#each { length: 10 } as _, __}
+				<BookCard placeholder={true} />
+			{/each}
+		{:else}
+			{#each books as book (book.id)}
+				<BookCard {book} openDrawer={openIssueDrawer} placeholder={false} />
+			{/each}
+		{/if}
 	</div>
 </main>

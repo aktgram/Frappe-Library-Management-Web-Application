@@ -26,11 +26,11 @@
 		drawerStore.open(drawerSettings);
 	}
 
-	let searchInput = '';
+	let searchTitle = '';
+	let searchAuthor = '';
 	let searchToggle = false;
 	function onClearSearch() {
-		if (searchInput === '') {
-			// Add any additional logic here
+		if (searchTitle == '' && searchAuthor === '') {
 			// refresh books from search result to home feed
 			searchToggle = false;
 		} else {
@@ -41,9 +41,9 @@
 
 <main>
 	<div class="flex my-5 items-center justify-between">
-		<!-- Search Box -->
+		<!-- Search by Title -->
 		<div
-			class="input-group input-group-divider rounded-full grid-cols-[auto_1fr_auto] w-1/3 h-full"
+			class="input-group input-group-divider rounded-full grid-cols-[auto_1fr_auto] w-1/4 h-full"
 		>
 			<div class="input-group-shim"><i class="fas fa-search" /></div>
 			<!-- Font Awesome search icon -->
@@ -51,11 +51,29 @@
 				id="searchInput"
 				type="search"
 				class="px-3 py-2"
-				placeholder="Search for Books"
-				bind:value={searchInput}
+				placeholder="Search by Book Title..."
+				bind:value={searchTitle}
 				on:input={onClearSearch}
 			/>
-			<button class="variant-filled-secondary">Submit</button>
+		</div>
+
+		<!-- Spacer -->
+		<div class="flex-grow" />
+
+		<!-- Search by Authors -->
+		<div
+			class="input-group input-group-divider rounded-full grid-cols-[auto_1fr_auto] w-1/4 h-full"
+		>
+			<div class="input-group-shim"><i class="fas fa-search" /></div>
+			<!-- Font Awesome search icon -->
+			<input
+				id="searchInput"
+				type="search"
+				class="px-3 py-2"
+				placeholder="Search by Book Authors..."
+				bind:value={searchAuthor}
+				on:input={onClearSearch}
+			/>
 		</div>
 
 		<!-- Spacer -->
@@ -70,7 +88,7 @@
 	</div>
 
 	{#if searchToggle === true}
-		<SearchBody {openIssueDrawer} />
+		<SearchBody {searchTitle} {searchAuthor} {openIssueDrawer} />
 	{:else}
 		<SuggestedBooksBody {openIssueDrawer} />
 	{/if}
