@@ -74,14 +74,17 @@ def add_book_stock():
     return {'result': f'Stock update successfull for book_id: {book_id} to {stock}'}, 201
 
 
-@ books.route('/books/search', methods=['GET'])
+@books.route('/books/search', methods=['GET'])
 def search_books():
     ''' Search for books by name and author '''
     title = request.args.get('title') or ""
     authors = request.args.get('authors') or ""
-    books = Books.query.filter(func.lower(Books.title).contains(
-        func.lower(title)), func.lower(Books.authors).contains(func.lower(authors))).all()
-    return {'book_ids': [book.id for book in books]}, 200
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    books_list = Books.query.filter(func.lower(Books.title).contains(
+        func.lower(title)), func.lower(Books.authors).contains(func.lower(authors))).paginate(
+        page=page, per_page=per_page, error_out=False)
+    return {'books': [book.to_dict() for book in books_list.items]}, 200
 
 
 @ books.route('/books/import', methods=['POST'])
