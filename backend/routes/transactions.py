@@ -8,7 +8,7 @@ from ..models import db, Transactions, Members, Books
 transactions = Blueprint('transactions', __name__)
 
 
-@ transactions.route('/transactions/<int:transaction_id>', methods=['GET'])
+@transactions.route('/transactions/<int:transaction_id>', methods=['GET'])
 def get_transaction(transaction_id):
     ''' Get a transaction by id '''
     transaction = Transactions.query.get(transaction_id)

@@ -18,8 +18,10 @@ class Books(db.Model):
     publication_date = db.Column(db.String, nullable=False)
     publisher = db.Column(db.String, nullable=False)
     stock = db.Column(db.Integer, nullable=False, default=0)
+    transactions = db.relationship('Transactions', backref='book', lazy=True)
 
     def to_dict(self):
+        ''' Dictionary represetation '''
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
@@ -28,8 +30,10 @@ class Members(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     outstanding_debt = db.Column(db.Numeric(10, 2), default=0.0)
+    transactions = db.relationship('Transactions', backref='member', lazy=True)
 
     def to_dict(self):
+        ''' Dictionary represetation '''
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
@@ -45,4 +49,9 @@ class Transactions(db.Model):
     rent_fee = db.Column(db.Numeric(10, 2), default=0.0)
 
     def to_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+        ''' Dictionary represetation '''
+        transaction_dict = {c.name: getattr(
+            self, c.name) for c in self.__table__.columns}
+        transaction_dict['book_title'] = self.book.title
+        transaction_dict['member_name'] = self.member.name
+        return transaction_dict
