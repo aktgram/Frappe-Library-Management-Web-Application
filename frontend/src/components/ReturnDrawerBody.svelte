@@ -18,26 +18,30 @@
 			issuedDetails = json.transaction;
 			showDetails = true;
 
-			const return_date_transaction = issuedDetails.return_date;
-			if (return_date_transaction != null) {
-				bookAlreadyReturned = true;
-				// get the existing paragraph element
-				let p = document.getElementById('returnDate');
+			let p = document.getElementById('returnedMessage');
+			if (p) {
+				event.target.removeChild(p);
+			}
 
-				// create a new paragraph element if it doesn't exist
-				if (!p) {
-					p = document.createElement('p');
-					p.id = 'returnDate'; // set a custom id
-					p.className = 'h4 p-14';
-					event.target.appendChild(p);
-				}
+			let return_date_transaction = issuedDetails.return_date;
+			if (return_date_transaction !== null) {
+				bookAlreadyReturned = true;
+
+				// add ui to display message
+				p = document.createElement('p');
+				p.id = 'returnedMessage'; // set a custom id
+				p.className = 'h4 p-14';
+				event.target.appendChild(p);
 
 				// update the text content
 				p.textContent =
 					'Book Already Returned on ' + new Date(return_date_transaction).toLocaleDateString();
+			} else {
+				bookAlreadyReturned = false;
 			}
 		} else {
 			console.error('HTTP-Error: ' + response.status);
+			console.error(response.body);
 			alert('Server Down!!');
 		}
 	}

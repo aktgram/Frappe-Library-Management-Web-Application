@@ -35,11 +35,16 @@
 			const p = document.createElement('p');
 			p.textContent = 'Transaction Reference Number: ' + transactionId;
 			p.className = 'h4 p-14';
+			p.id = 'issuedMessage';
 
 			// append the paragraph to the form
 			event.target.appendChild(p);
-
 			bookIssued = true;
+			p.scrollIntoView({ behavior: 'smooth' }, true);
+
+			book.stock--;
+		} else if (response.status == 409) {
+			alert("Member's Debt will exceed ₹500");
 		} else {
 			console.error('HTTP-Error: ' + response.status);
 			alert('Server Down!!');
@@ -142,9 +147,10 @@
 			</label>
 
 			<button
-				disabled={bookIssued}
+				disabled={bookIssued || book.stock === 0}
 				type="submit"
-				class="btn rounded-full variant-filled-secondary mt-10">Issue Book</button
+				class="btn rounded-full variant-filled-secondary mt-10"
+				>{book.stock === 0 ? 'Not Enough Stock' : 'Issue Book'}</button
 			>
 		</form>
 	</div>
