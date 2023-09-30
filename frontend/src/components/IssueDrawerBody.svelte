@@ -11,6 +11,41 @@
 	let rentFee;
 	let transactionId;
 	let bookIssued = false;
+	let isEditingStock = false;
+	let stockValue = book.stock;
+
+	function toggleEditStock(saveChanges) {
+		isEditingStock = !isEditingStock;
+		if (saveChanges && stockValue > 0) {
+			// save changes
+			updateStock();
+		} else if (!saveChanges) {
+			// restore old value
+			stockValue = book.stock;
+		} else {
+			alert('Stock value must be greater than 0');
+			isEditingStock = true;
+		}
+	}
+
+	async function updateStock() {
+		const response = await fetch(PUBLIC_API_URL + `/books/stock`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				book_id: book.id,
+				stock: stockValue
+			})
+		});
+		if (response.ok) {
+			alert('Book Stock Updated successfully');
+			book.stock = stockValue;
+		} else {
+			alert('Book Stock Updated failed');
+		}
+	}
 
 	async function issueBook(event) {
 		event.preventDefault();
@@ -108,10 +143,30 @@
 				<td>Publisher:</td>
 				<td>{book.publisher}</td>
 			</tr>
-			<tr>
-				<td>Stock:</td>
-				<td>{book.stock}</td>
-			</tr>
+			<td>Stock:</td>
+			<td>
+				{#if isEditingStock}
+					<input
+						bind:value={stockValue}
+						class="input w-24 h-6 rounded-full px-2 mr-2"
+						type="number"
+						min="1"
+					/>
+					<button on:click={() => toggleEditStock(true)}>
+						<i class="fas fa-check" />
+					</button>
+					<button on:click={() => toggleEditStock(false)}>
+						<i class="fas fa-times ml-1" />
+					</button>
+				{:else}
+					<span class="mr-4">
+						{stockValue}
+					</span>
+					<button on:click={() => toggleEditStock()}>
+						<i class="fas fa-edit" />
+					</button>
+				{/if}
+			</td>
 		</table>
 
 		<form on:submit={issueBook}>
