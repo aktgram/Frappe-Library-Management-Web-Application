@@ -7,14 +7,35 @@
 	let issuedDetails;
 	let showDetails = false;
 	let bookReturned = false;
+	let bookAlreadyReturned = false;
 
-	async function fetchIssuedDetails() {
+	async function fetchIssuedDetails(event) {
+		event.preventDefault();
 		// Fetch the issued details based on the transaction ID
 		const response = await fetch(PUBLIC_API_URL + `/transactions/${transactionId}`);
 		if (response.ok) {
 			const json = await response.json();
 			issuedDetails = json.transaction;
 			showDetails = true;
+
+			const return_date_transaction = issuedDetails.return_date;
+			if (return_date_transaction != null) {
+				bookAlreadyReturned = true;
+				// get the existing paragraph element
+				let p = document.getElementById('returnDate');
+
+				// create a new paragraph element if it doesn't exist
+				if (!p) {
+					p = document.createElement('p');
+					p.id = 'returnDate'; // set a custom id
+					p.className = 'h4 p-14';
+					event.target.appendChild(p);
+				}
+
+				// update the text content
+				p.textContent =
+					'Book Already Returned on ' + new Date(return_date_transaction).toLocaleDateString();
+			}
 		} else {
 			console.error('HTTP-Error: ' + response.status);
 			alert('Server Down!!');
@@ -100,26 +121,28 @@
 				</tr>
 			</table>
 
-			<form on:submit={returnBook}>
-				<label for="returnDate" class="label mt-10">
-					<span>Return Date:</span>
-					<input
-						bind:value={returnDate}
-						id="returnDate"
-						class="input mb-10 rounded-full px-3"
-						type="date"
-						required
-					/>
-				</label>
+			{#if !bookAlreadyReturned}
+				<form on:submit={returnBook}>
+					<label for="returnDate" class="label mt-10">
+						<span>Return Date:</span>
+						<input
+							bind:value={returnDate}
+							id="returnDate"
+							class="input mb-10 rounded-full px-3"
+							type="date"
+							required
+						/>
+					</label>
 
-				<button
-					type="submit"
-					class="btn rounded-full variant-filled-secondary"
-					disabled={bookReturned}
-				>
-					{bookReturned ? 'Returned Book Successfully' : 'Return Book'}
-				</button>
-			</form>
+					<button
+						type="submit"
+						class="btn rounded-full variant-filled-secondary"
+						disabled={bookReturned}
+					>
+						{bookReturned ? 'Returned Book Successfully' : 'Return Book'}
+					</button>
+				</form>
+			{/if}
 		{/if}
 	</div>
 </main>
