@@ -1,23 +1,49 @@
 <script>
 	import { getDrawerStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { PUBLIC_API_URL } from '$env/static/public';
 
 	const drawerStore = getDrawerStore();
 	const book = $drawerStore.meta;
 
-	function issueBook(event) {
+	let memberId;
+	let issueDate;
+	let rentFee;
+	let transactionId;
+	let bookIssued = false;
+
+	async function issueBook(event) {
 		event.preventDefault();
 
-		// generate a transaction reference number
-		const transactionRef = 2; // replace this with your own logic
+		const response = await fetch(PUBLIC_API_URL + `/transactions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				book_id: book.id,
+				member_id: memberId,
+				issue_date: issueDate,
+				rent_fee: rentFee
+			})
+		});
+		if (response.status == 201) {
+			const json = await response.json();
+			transactionId = json.id;
 
-		// create a new paragraph element
-		const p = document.createElement('p');
-		p.textContent = 'Transaction Reference Number: ' + transactionRef;
-		p.className = 'h4 p-14';
+			// create a new paragraph element
+			const p = document.createElement('p');
+			p.textContent = 'Transaction Reference Number: ' + transactionId;
+			p.className = 'h4 p-14';
 
-		// append the paragraph to the form
-		event.target.appendChild(p);
+			// append the paragraph to the form
+			event.target.appendChild(p);
+
+			bookIssued = true;
+		} else {
+			console.error('HTTP-Error: ' + response.status);
+			alert('Server Down!!');
+		}
 	}
 
 	onMount(() => {
@@ -26,9 +52,7 @@
 		let day = String(today.getDate()).padStart(2, '0');
 		let month = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 		let year = today.getFullYear();
-
-		today = year + '-' + month + '-' + day;
-		document.getElementById('issueDate').value = today;
+		issueDate = year + '-' + month + '-' + day;
 	});
 </script>
 
@@ -86,9 +110,10 @@
 		</table>
 
 		<form on:submit={issueBook}>
-			<label for="memberId" class="label">
+			<label for="memberId" class="label mt-5">
 				<span>Member ID:</span>
 				<input
+					bind:value={memberId}
 					id="memberId"
 					class="input mb-10 rounded-full px-3"
 					type="text"
@@ -97,13 +122,29 @@
 				/>
 			</label>
 
-			<label for="issueDate" class="label mt-10">
-				<span>Issue Date:</span>
-				<input id="issueDate" class="input mb-10 rounded-full px-3" type="date" required />
+			<label for="rentFee" class="label mt-10">
+				<span>Rent Amount</span>
+				<div class="input-group rounded-full input-group-divider grid-cols-[auto_1fr_auto]">
+					<div class="input-group-shim"><i class="fas fa-rupee-sign" /></div>
+					<input bind:value={rentFee} class="px-3" type="text" placeholder="Amount" />
+				</div>
 			</label>
 
-			<button type="submit" class="btn rounded-full variant-filled-secondary mt-10"
-				>Issue Book</button
+			<label for="issueDate" class="label mt-10">
+				<span>Issue Date:</span>
+				<input
+					bind:value={issueDate}
+					id="issueDate"
+					class="input mb-10 rounded-full px-3"
+					type="date"
+					required
+				/>
+			</label>
+
+			<button
+				disabled={bookIssued}
+				type="submit"
+				class="btn rounded-full variant-filled-secondary mt-10">Issue Book</button
 			>
 		</form>
 	</div>
