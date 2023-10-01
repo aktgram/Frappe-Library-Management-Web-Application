@@ -7,6 +7,16 @@ from ..models import db, Members
 members = Blueprint('members', __name__)
 
 
+@members.route('/members', methods=['GET'])
+def get_members():
+    ''' Get members ordered by id with pagination '''
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    members_list = Members.query.order_by(Members.id).paginate(
+        page=page, per_page=per_page, error_out=False)
+    return {'members': [member.to_dict() for member in members_list.items]}, 200
+
+
 @ members.route('/members/<int:member_id>', methods=['GET'])
 def get_member(member_id):
     ''' Get a member by id '''
