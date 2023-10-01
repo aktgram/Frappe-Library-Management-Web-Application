@@ -1,4 +1,6 @@
+from psycopg2 import IntegrityError
 import requests
+import math
 
 from flask import Blueprint, request
 from sqlalchemy import func, update
@@ -91,34 +93,61 @@ def search_books():
 def import_books():
     ''' Import books from the Frappe API '''
     data = request.get_json()
-    response = requests.get('https://frappe.io/api/method/frappe-library',
-                            params=data, timeout=30)
-    books_data = response.json().get('message')
+    number_of_books = data.get("number_of_books") or 20
+    pages = math.ceil(number_of_books / 20)
+    last_page_books = number_of_books - (pages - 1) * 20
+    last_page_flag = False
 
-    for book_data in books_data:
-        try:
-            book_data_model = {
-                "id": book_data.get("bookID"),
-                "title": book_data.get("title"),
-                "authors": book_data.get("authors"),
-                "average_rating": book_data.get("average_rating"),
-                "isbn": book_data.get("isbn"),
-                "isbn13": book_data.get("isbn13"),
-                "language_code": book_data.get("language_code"),
-                "num_pages": book_data.get("  num_pages"),
-                "ratings_count": book_data.get("ratings_count"),
-                "text_reviews_count": book_data.get("text_reviews_count"),
-                "publication_date": book_data.get("publication_date"),
-                "publisher": book_data.get("publisher")
-            }
-            book = Books(**book_data_model)
-            db.session.add(book)
-        except Exception:
-            db.session.rollback()
+    i = 1
+    total_books = []
 
-    db.session.commit()
+    while i <= pages:
+        if i == pages:
+            last_page_flag = True
+        data.update({'page': i})
+        i += 1
 
-    return {'no_imported_books': len(books_data)}, 201
+        response = requests.get('https://frappe.io/api/method/frappe-library',
+                                params=data, timeout=30)
+
+        books_data = response.json().get('message')
+
+        for book_data in books_data:
+            # in last page all books not needed according to no of books
+            if last_page_flag:
+                last_page_books -= 1
+            if last_page_books < 0:
+                break
+
+            # now add to import data
+            try:
+                book_data_model = {
+                    "id": book_data.get("bookID"),
+                    "title": book_data.get("title"),
+                    "authors": book_data.get("authors"),
+                    "average_rating": book_data.get("average_rating"),
+                    "isbn": book_data.get("isbn"),
+                    "isbn13": book_data.get("isbn13"),
+                    "language_code": book_data.get("language_code"),
+                    "num_pages": book_data.get("  num_pages"),
+                    "ratings_count": book_data.get("ratings_count"),
+                    "text_reviews_count": book_data.get("text_reviews_count"),
+                    "publication_date": book_data.get("publication_date"),
+                    "publisher": book_data.get("publisher")
+                }
+                book = Books(**book_data_model)
+                db.session.add(book)
+                db.session.commit()
+                total_books.append(book.to_dict())
+            except IntegrityError:
+                db.session.rollback()  # Rollback the transaction on error
+            except Exception:
+                db.session.rollback()
+
+        if last_page_flag:
+            break
+
+    return {'no_imported_books': len(total_books)}, 201
 
 
 @ books.route('/books/import-all', methods=['POST'])
@@ -151,10 +180,12 @@ def import_all_books():
                     }
                     book = Books(**book_data_model)
                     db.session.add(book)
+                    db.session.commit()
+                except IntegrityError:
+                    db.session.rollback()  # Rollback the transaction on error
                 except Exception:
-                    print("Error adding data")
+                    db.session.rollback()
 
-            db.session.commit()
         except Exception:
             db.session.rollback()
             print("Duplicate data, rolling back db session")
