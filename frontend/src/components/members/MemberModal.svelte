@@ -89,7 +89,7 @@
 				<button
 					disabled={disableSubmit}
 					type="submit"
-					class="btn rounded-full {parent.buttonPositive}">Submit</button
+					class="btn variant-filled-secondary rounded-full {parent.buttonPositive}">Submit</button
 				>
 			</footer>
 		</form>
