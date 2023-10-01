@@ -5,8 +5,9 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	const modalStore = getModalStore();
 
-	let name = '';
-	let debt = 0.0;
+	let name = $modalStore[0].member_name ?? '';
+	let debt = $modalStore[0].member_debt ?? 0.0;
+	let disableSubmit = false;
 
 	function validateDebt() {
 		if (debt < 0.0) {
@@ -18,13 +19,33 @@
 		if (debt < 0.0) {
 			alert();
 		}
-		try {
-			const res = await submitForm(name, debt);
-			const json = await res.json();
-			const member_id = json.id;
-			alert(`Member succesfully created with id ${member_id}`);
-		} catch (error) {
-			alert('Member creation failed: ' + error.message);
+		disableSubmit = true;
+
+		// edit member details
+		if ($modalStore[0].member_id) {
+			try {
+				const res = await submitForm($modalStore[0].member_id, name, debt);
+				if (res.ok) {
+					alert(`Member ${$modalStore[0].member_id} succesfully edited`);
+					window.location.reload();
+				} else {
+					alert('Member edit failed: ' + res.status);
+				}
+			} catch (error) {
+				alert('Member edit failed: ' + error.message);
+			}
+		}
+		// add new member
+		else {
+			try {
+				const res = await submitForm(name, debt);
+				const json = await res.json();
+				const member_id = json.id;
+				alert(`Member succesfully created with id ${member_id}`);
+				window.location.reload();
+			} catch (error) {
+				alert('Member creation failed: ' + error.message);
+			}
 		}
 		modalStore.close();
 	}
@@ -32,7 +53,7 @@
 
 {#if $modalStore[0]}
 	<div class="modal-example-form card p-4 w-modal shadow-xl space-y-4">
-		<header class="text-2xl my-2">{'Add New Member'}</header>
+		<header class="text-2xl my-2">{$modalStore[0].title ?? 'Add New Member'}</header>
 
 		<form on:submit={onFormSubmit} class="modal-form">
 			<label class="member_name_add">
@@ -52,6 +73,7 @@
 					<input
 						class="py-1 px-3"
 						type="number"
+						step="0.01"
 						bind:value={debt}
 						on:input={validateDebt}
 						placeholder="Enter outstanding debt if any..."
@@ -64,7 +86,11 @@
 				<button class="btn rounded-full {parent.buttonNeutral}" on:click={parent.onClose}
 					>{parent.buttonTextCancel}</button
 				>
-				<button type="submit" class="btn rounded-full {parent.buttonPositive}">Submit</button>
+				<button
+					disabled={disableSubmit}
+					type="submit"
+					class="btn rounded-full {parent.buttonPositive}">Submit</button
+				>
 			</footer>
 		</form>
 	</div>

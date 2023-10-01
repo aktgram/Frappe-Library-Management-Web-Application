@@ -3,7 +3,7 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
-	import AddMemberModal from '../../components/AddMemberModal.svelte';
+	import AddMemberModal from '../../components/members/MemberModal.svelte';
 
 	const modalStore = getModalStore();
 
@@ -37,11 +37,40 @@
 	}
 
 	function deleteMember(id) {
-		members = members.filter((member) => member.id !== id);
+		Promise.race([
+			fetch(PUBLIC_API_URL + `/members/${id}`, {
+				method: 'DELETE'
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 8000))
+		])
+			.then((res) => {
+				if (res.status === 204) {
+					alert(`Member ${id} Deleted`);
+					members = members.filter((member) => member.id !== id);
+				} else {
+					alert(`Member Deletion failed`);
+				}
+			})
+			.catch(() => {
+				alert(error.message);
+			});
 	}
 
-	function updateMember(id) {
+	function updateMember(id, name, debt) {
 		// Update member logic here
+		return Promise.race([
+			fetch(PUBLIC_API_URL + `/members/${id}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					name: name,
+					outstanding_debt: debt
+				})
+			}),
+			new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), 8000))
+		]);
 	}
 
 	function nextPage() {
@@ -64,15 +93,36 @@
 	function addMemberModal() {
 		const modal = {
 			type: 'component',
-			component: 'modalComponent'
+			component: 'addModalComponent'
 		};
 		modalStore.trigger(modal);
 	}
 
+	function editMemberModal(member_id, member_name, member_debt) {
+		if (!member_id || !member_debt || !member_name || member_id == 0) {
+			alert('edit error');
+		} else {
+			const modal = {
+				type: 'component',
+				component: 'editModalComponent',
+				title: `Edit Member ${member_id} Details`,
+				member_name: member_name,
+				member_id: member_id,
+				member_debt: member_debt
+			};
+			modalStore.trigger(modal);
+		}
+	}
+
 	const modalComponentRegistry = {
-		modalComponent: {
+		addModalComponent: {
 			ref: AddMemberModal,
 			props: { submitForm: addMember },
+			slot: '<p>Error loading Modal</p>'
+		},
+		editModalComponent: {
+			ref: AddMemberModal,
+			props: { submitForm: updateMember },
 			slot: '<p>Error loading Modal</p>'
 		}
 	};
@@ -115,24 +165,18 @@
 					<tr>
 						<td>{member.id}</td>
 						<td>
-							<button
-								class="btn btn-square btn-primary text-lg mr-2"
-								on:click={() => updateMember(member.id)}
-							>
-								<i class="fas fa-edit" />
-							</button>
 							{member.name}
 						</td>
 						<td>
-							<button
-								class="btn btn-square btn-primary text-lg mr-2"
-								on:click={() => updateMember(member.id)}
-							>
-								<i class="fas fa-edit" />
-							</button>
 							₹{member.outstanding_debt}
 						</td>
 						<td>
+							<button
+								class="btn btn-square btn-primary text-lg"
+								on:click={() => editMemberModal(member.id, member.name, member.outstanding_debt)}
+							>
+								<i class="fas fa-edit" />
+							</button>
 							<button
 								class="btn btn-square btn-error text-lg"
 								on:click={() => deleteMember(member.id)}
