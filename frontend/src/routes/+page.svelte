@@ -1,12 +1,11 @@
 <script>
-	import { Drawer, initializeStores, getDrawerStore } from '@skeletonlabs/skeleton';
+	import { Drawer, getDrawerStore } from '@skeletonlabs/skeleton';
 
 	import IssueDrawerBody from '../components/IssueDrawerBody.svelte';
 	import ReturnDrawerBody from '../components/ReturnDrawerBody.svelte';
 	import SuggestedBooksBody from '../components/SuggestedBooksBody.svelte';
 	import SearchBody from '../components/SearchBody.svelte';
 
-	initializeStores();
 	const drawerStore = getDrawerStore();
 
 	function openIssueDrawer(book) {

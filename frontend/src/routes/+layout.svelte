@@ -1,6 +1,8 @@
 <script>
-	import { AppBar, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppBar, LightSwitch, initializeStores } from '@skeletonlabs/skeleton';
 	import '../app.postcss';
+
+	initializeStores();
 </script>
 
 <!-- Fontawesome icons -->
@@ -15,8 +17,8 @@
 			<h2 class="h2">Frappe Library Management System</h2>
 		</svelte:fragment>
 		<svelte:fragment slot="trail">
-			<button type="button" class="btn rounded-full variant-filled-secondary">Add Book</button>
-			<button type="button" class="btn rounded-full variant-filled-secondary">Add Member</button>
+			<a href="/" class="btn rounded-full variant-filled-secondary"> Books </a>
+			<a href="/members" class="btn rounded-full variant-filled-secondary"> Members </a>
 			<LightSwitch />
 		</svelte:fragment>
 	</AppBar>
