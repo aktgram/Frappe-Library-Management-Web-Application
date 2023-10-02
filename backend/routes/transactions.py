@@ -8,6 +8,16 @@ from ..models import db, Transactions, Members, Books
 transactions = Blueprint('transactions', __name__)
 
 
+@transactions.route('/transactions', methods=['GET'])
+def get_transactions():
+    ''' Get transactions ordered by id with pagination '''
+    page = request.args.get('page', 1, type=int)
+    per_page = 15
+    transactions_list = Transactions.query.order_by(Transactions.id).paginate(
+        page=page, per_page=per_page, error_out=False)
+    return {'transactions': [transaction.to_dict() for transaction in transactions_list.items]}, 200
+
+
 @transactions.route('/transactions/<int:transaction_id>', methods=['GET'])
 def get_transaction(transaction_id):
     ''' Get a transaction by id '''
