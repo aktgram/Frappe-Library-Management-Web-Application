@@ -35,7 +35,8 @@
 
 				// update the text content
 				p.textContent =
-					'Book Already Returned on ' + new Date(return_date_transaction).toLocaleDateString();
+					'Book Already Returned on ' +
+					new Date(return_date_transaction).toLocaleDateString('en-GB');
 			} else {
 				bookAlreadyReturned = false;
 			}
@@ -117,7 +118,7 @@
 				</tr>
 				<tr>
 					<td>Issue Date:</td>
-					<td>{new Date(issuedDetails.issue_date).toLocaleDateString()}</td>
+					<td>{new Date(issuedDetails.issue_date).toLocaleDateString('en-GB')}</td>
 				</tr>
 				<tr>
 					<td>Rent Fee:</td>

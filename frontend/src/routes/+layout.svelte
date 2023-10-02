@@ -19,6 +19,9 @@
 		<svelte:fragment slot="trail">
 			<a href="/" class="btn rounded-full variant-filled-secondary"> Books Home </a>
 			<a href="/members" class="btn rounded-full variant-filled-secondary"> Members Home </a>
+			<a href="/transactions" class="btn rounded-full variant-filled-secondary">
+				View Transactions
+			</a>
 			<a href="/import" class="btn rounded-full variant-filled-secondary">
 				Import External Books
 			</a>
