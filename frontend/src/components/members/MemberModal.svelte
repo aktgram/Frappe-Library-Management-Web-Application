@@ -52,7 +52,7 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="modal-example-form card p-4 w-modal shadow-xl space-y-4">
+	<div class="modal-example-form rounded-lg card px-6 pt-4 pb-8 w-modal shadow-xl space-y-4">
 		<header class="text-2xl my-2">{$modalStore[0].title ?? 'Add New Member'}</header>
 
 		<form on:submit={onFormSubmit} class="modal-form">

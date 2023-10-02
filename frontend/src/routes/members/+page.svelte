@@ -46,7 +46,7 @@
 			.then((res) => {
 				if (res.status === 204) {
 					alert(`Member ${id} Deleted`);
-					members = members.filter((member) => member.id !== id);
+					window.location.reload();
 				} else {
 					alert(`Member Deletion failed`);
 				}
