@@ -2,6 +2,14 @@
 
 ### Problem statement [link](https://frappe.io/dev-hiring-test)
 
+## Main Ideas
+- Page navigation kept minimal, for quick single page application like usage.
++ Instant search as you type allows fast lookup of books, Debouncing implemented to reduce api calls.
+- Keep main functionality at easy reach, issuing and returning book, in the home screen using Side Drawers.
++ Avoid unnecessary prompts for editing small fields, such as Book Stock, has been done with simple edit button within Book details UI.
+- Integration to Frappe API done via backend, which scans through several pages of the api as required for larger no of books.
++ CRUD operations implemented through Forms within Modals.
+
 ## Demo
 - [Import Books, Update Book Stock](https://drive.google.com/file/d/1rJ_PQPSNiqn2awgdrPoMUq1lCQzb0DgI/view?usp=drive_link)
 - [Search Books with Debouncing Instant search](https://drive.google.com/file/d/1Va9UcHdcHfkA7yQaFgu0QAqFfI_OIpGk/view?usp=drive_link)
