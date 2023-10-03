@@ -100,6 +100,7 @@ def import_books():
     while len(total_books) < number_of_books and i <= 200:  # Add condition for max pages
         data.update({'page': i})
         i += 1
+        print(i)
 
         response = requests.get('https://frappe.io/api/method/frappe-library',
                                 params=data, timeout=30)
@@ -134,6 +135,11 @@ def import_books():
             except Exception:
                 db.session.rollback()
 
+        # if no books available for query
+        if len(books_data) == 0:
+            break
+
+        # if required no of books obtained
         if len(total_books) >= number_of_books:
             break
 
