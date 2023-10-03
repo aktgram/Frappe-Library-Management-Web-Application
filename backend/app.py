@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -14,7 +16,7 @@ app.register_blueprint(members)
 app.register_blueprint(transactions)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-    'postgresql://admin:password@localhost:5432/library?sslmode=disable'
+    os.environ.get('DB_URL')
 
 db.init_app(app)
 migrate = Migrate(app, db)
