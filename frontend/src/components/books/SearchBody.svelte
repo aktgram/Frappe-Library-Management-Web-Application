@@ -16,8 +16,10 @@
 
 	let books = [];
 	let pageNumber = 1;
+	let searching = true;
 
 	async function searchBooks() {
+		searching = true;
 		// remove unnecessary invocation when search field emptied
 		if (searchAuthor != '' || searchTitle != '') {
 			// Cancel any previous requests and create new controller
@@ -34,9 +36,15 @@
 				if (response.ok) {
 					const json = await response.json();
 					books = json.books;
+					if (books.length <= 0) {
+						searching = false;
+					}
 				} else {
 					console.error('HTTP-Error: ' + response.status);
 					modalAlert(modalStore, 'Server Down!!');
+					if (books.length <= 0) {
+						searching = false;
+					}
 				}
 			}, 300);
 		}
@@ -83,10 +91,14 @@
 	<div
 		class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xxl:grid-cols-6 gap-20 auto-cols-min"
 	>
-		{#if books.length === 0}
+		{#if books.length === 0 && searching === true}
 			{#each { length: 10 } as _, __}
 				<BookCard placeholder={true} />
 			{/each}
+		{:else if books.length === 0 && searching === false}
+			<div class="container flex w-100">
+				<h3 class="h3">No Search Results</h3>
+			</div>
 		{:else}
 			{#each books as book (book.id)}
 				<BookCard {book} openDrawer={openIssueDrawer} placeholder={false} />

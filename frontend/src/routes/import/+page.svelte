@@ -44,7 +44,7 @@
 <main>
 	<div class="container mx-auto p-6">
 		<h2 class="text-3xl font-semibold">Import Books from Frappe API</h2>
-		<div class="flex justify-center items-centerr">
+		<div class="flex justify-center">
 			<form on:submit={startImport} class="mt-10 max-w-lg w-full">
 				<div class="card p-10 rounded-lg">
 					<div class="flex justify-center">
