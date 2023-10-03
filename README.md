@@ -2,16 +2,20 @@
 
 ### Problem statement [link](https://frappe.io/dev-hiring-test)
 
+## Demo
+- [Import Books, Update Book Stock](https://drive.google.com/file/d/1rJ_PQPSNiqn2awgdrPoMUq1lCQzb0DgI/view?usp=drive_link)
+- [Search Books with Debouncing Instant search](https://drive.google.com/file/d/1Va9UcHdcHfkA7yQaFgu0QAqFfI_OIpGk/view?usp=drive_link)
+- [Return Book](https://drive.google.com/file/d/1KDdcnCfVAyCQvoRiVLpLb8ylBJktd0j3/view?usp=drive_link)
+- [₹500 debt exceed alert, Transaction details, Issue Book](https://drive.google.com/file/d/1iHlh1ELe4dMRu_it9GqnIayyof1d144a/view?usp=drive_link)
+- [Members CRUD](https://drive.google.com/file/d/1vSJ39V_SO_Njomr2wELoyEBGKnRxdyV5/view?usp=drive_link)
+
 ## Data Design:
 ![DataDesign](./design/data_design_frappe_library.png)
 
 ## Running locally:
 **Run in order:**
 
-### Database (AWS)
-- URL: http://16.16.156.1:5050 (no https) (pgadmin)
-- Username: ``` admin@example.com ```
-- Password: ``` admin ```
+### Database
 ```
 cd database
 ```
@@ -19,8 +23,8 @@ cd database
 docker-compose up --build
 ```
 
-### Backend (AWS)
-- URL https://16.16.156.1 (with https)
+### Backend (Render)
+- URL https://frappe-library-backend.onrender.com
 ```
 cd backend
 ```
