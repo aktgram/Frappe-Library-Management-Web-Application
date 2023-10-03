@@ -12,6 +12,20 @@
 ## Data Design:
 ![DataDesign](./design/data_design_frappe_library.png)
 
+## Libraries used:
+**Frontend**
+- Svelte and Sveltkit
+- Tailwind CSS
+- Skeleton UI Toolkit for Svelte
+
+**Backend**
+- Flask
+- Flask Migrate and Alembic
+- SQLAlchemy
+
+**Database**
+- Postgresql
+
 ## Running locally:
 **Run in order:**
 
