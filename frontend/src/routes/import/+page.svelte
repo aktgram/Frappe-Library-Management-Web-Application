@@ -1,5 +1,9 @@
 <script>
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { modalAlert } from '../../functions/showAlert';
+
+	const modalStore = getModalStore();
 
 	let title, authors, isbn, publisher, number_of_books;
 	let importing = false;
@@ -21,13 +25,13 @@
 			});
 			if (response.status == 201) {
 				const books = await response.json();
-				alert(`successfully imported ${books.no_imported_books} books`);
+				modalAlert(modalStore, `successfully imported ${books.no_imported_books} books`);
 			} else {
-				alert(`server error: ${response.status}`);
+				modalAlert(modalStore, `server error: ${response.status}`);
 			}
 		} catch (error) {
 			console.log(error.message);
-			alert('import error');
+			modalAlert(modalStore, 'import error');
 		}
 		importing = false;
 	}

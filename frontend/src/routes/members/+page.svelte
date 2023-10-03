@@ -1,9 +1,9 @@
 <script>
-	import { Modal } from '@skeletonlabs/skeleton';
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { Modal, getModalStore } from '@skeletonlabs/skeleton';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
-	import AddMemberModal from '../../components/members/MemberModal.svelte';
+	import MemberModal from '../../components/members/MemberModal.svelte';
+	import { modalAlert } from '../../functions/showAlert';
 
 	const modalStore = getModalStore();
 
@@ -16,7 +16,7 @@
 			const json = await response.json();
 			members = json.members;
 		} else {
-			alert('Server down');
+			modalAlert(modalStore, 'Server down');
 		}
 	}
 
@@ -45,14 +45,14 @@
 		])
 			.then((res) => {
 				if (res.status === 204) {
-					alert(`Member ${id} Deleted`);
-					window.location.reload();
+					modalAlert(modalStore, `Member ${id} Deleted`);
+					setTimeout(() => window.location.reload(), 3000);
 				} else {
-					alert(`Member Deletion failed`);
+					modalAlert(modalStore, `Member Deletion failed`);
 				}
 			})
 			.catch(() => {
-				alert(error.message);
+				modalAlert(modalStore, error.message);
 			});
 	}
 
@@ -100,7 +100,7 @@
 
 	function editMemberModal(member_id, member_name, member_debt) {
 		if (!member_id || !member_debt || !member_name || member_id == 0) {
-			alert('edit error');
+			modalAlert(modalStore, 'edit error');
 		} else {
 			const modal = {
 				type: 'component',
@@ -116,12 +116,12 @@
 
 	const modalComponentRegistry = {
 		addModalComponent: {
-			ref: AddMemberModal,
+			ref: MemberModal,
 			props: { submitForm: addMember },
 			slot: '<p>Error loading Modal</p>'
 		},
 		editModalComponent: {
-			ref: AddMemberModal,
+			ref: MemberModal,
 			props: { submitForm: updateMember },
 			slot: '<p>Error loading Modal</p>'
 		}

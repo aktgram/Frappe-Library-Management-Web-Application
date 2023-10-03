@@ -1,6 +1,10 @@
 <script>
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
+	import { modalAlert } from '../../functions/showAlert';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	let transactions = [];
 	let pageNumber = 1;
@@ -11,7 +15,7 @@
 			const json = await response.json();
 			transactions = json.transactions;
 		} else {
-			alert('Server down');
+			modalAlert(modalStore, 'Server down');
 		}
 	}
 

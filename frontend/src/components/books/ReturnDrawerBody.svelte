@@ -1,6 +1,10 @@
 <script>
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import { onMount } from 'svelte';
+	import { modalAlert } from '../../functions/showAlert';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	let returnDate;
 	let transactionId;
@@ -43,7 +47,7 @@
 		} else {
 			console.error('HTTP-Error: ' + response.status);
 			console.error(response.body);
-			alert('Server Down!!');
+			modalAlert(modalStore, 'Server Down!!');
 		}
 	}
 
@@ -64,7 +68,7 @@
 			bookReturned = true;
 		} else {
 			console.error('HTTP-Error: ' + response.status);
-			alert('Server Down!!');
+			modalAlert(modalStore, 'Server Down!!');
 		}
 	}
 

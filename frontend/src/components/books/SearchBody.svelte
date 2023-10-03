@@ -1,6 +1,10 @@
 <script>
 	import BookCard from './BookCard.svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { modalAlert } from '../../functions/showAlert';
+	import { getModalStore } from '@skeletonlabs/skeleton';
+
+	const modalStore = getModalStore();
 
 	export let openIssueDrawer;
 	export let searchTitle;
@@ -32,7 +36,7 @@
 					books = json.books;
 				} else {
 					console.error('HTTP-Error: ' + response.status);
-					alert('Server Down!!');
+					modalAlert(modalStore, 'Server Down!!');
 				}
 			}, 300);
 		}

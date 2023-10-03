@@ -3,6 +3,7 @@
 	export let submitForm;
 
 	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { modalAlert } from '../../functions/showAlert';
 	const modalStore = getModalStore();
 
 	let name = $modalStore[0].member_name ?? '';
@@ -17,7 +18,7 @@
 
 	async function onFormSubmit() {
 		if (debt < 0.0) {
-			alert();
+			modalAlert(modalStore, 'Debt must not be negative');
 		}
 		disableSubmit = true;
 
@@ -26,13 +27,13 @@
 			try {
 				const res = await submitForm($modalStore[0].member_id, name, debt);
 				if (res.ok) {
-					alert(`Member ${$modalStore[0].member_id} succesfully edited`);
-					window.location.reload();
+					modalAlert(modalStore, `Member ${$modalStore[0].member_id} succesfully edited`);
+					setTimeout(() => window.location.reload(), 3000);
 				} else {
-					alert('Member edit failed: ' + res.status);
+					modalAlert(modalStore, 'Member edit failed: ' + res.status);
 				}
 			} catch (error) {
-				alert('Member edit failed: ' + error.message);
+				modalAlert(modalStore, 'Member edit failed: ' + error.message);
 			}
 		}
 		// add new member
@@ -41,10 +42,10 @@
 				const res = await submitForm(name, debt);
 				const json = await res.json();
 				const member_id = json.id;
-				alert(`Member succesfully created with id ${member_id}`);
-				window.location.reload();
+				modalAlert(modalStore, `Member succesfully created with id ${member_id}`);
+				setTimeout(() => window.location.reload(), 3000);
 			} catch (error) {
-				alert('Member creation failed: ' + error.message);
+				modalAlert(modalStore, 'Member creation failed: ' + error.message);
 			}
 		}
 		modalStore.close();

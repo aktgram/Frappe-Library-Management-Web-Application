@@ -1,5 +1,5 @@
 <script>
-	import { AppBar, LightSwitch, initializeStores } from '@skeletonlabs/skeleton';
+	import { AppBar, LightSwitch, Modal, initializeStores } from '@skeletonlabs/skeleton';
 	import '../app.postcss';
 
 	initializeStores();
@@ -12,6 +12,7 @@
 />
 
 <main>
+	<Modal />
 	<AppBar slotDefault="place-self-center" slotTrail="place-content-end">
 		<svelte:fragment slot="lead">
 			<h2 class="h2">Frappe Library Management System</h2>

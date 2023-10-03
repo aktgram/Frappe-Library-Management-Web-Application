@@ -1,8 +1,10 @@
 <script>
-	import { getDrawerStore } from '@skeletonlabs/skeleton';
+	import { getDrawerStore, getModalStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { modalAlert } from '../../functions/showAlert';
 
+	const modalStore = getModalStore();
 	const drawerStore = getDrawerStore();
 	const book = $drawerStore.meta;
 
@@ -23,7 +25,7 @@
 			// restore old value
 			stockValue = book.stock;
 		} else {
-			alert('Stock value must be greater than 0');
+			modalAlert(modalStore, 'Stock value must be greater than 0');
 			isEditingStock = true;
 		}
 	}
@@ -40,10 +42,10 @@
 			})
 		});
 		if (response.ok) {
-			alert('Book Stock Updated successfully');
+			modalAlert(modalStore, 'Book Stock Updated successfully');
 			book.stock = stockValue;
 		} else {
-			alert('Book Stock Updated failed');
+			modalAlert(modalStore, 'Book Stock Updated failed');
 		}
 	}
 
@@ -79,10 +81,10 @@
 
 			book.stock--;
 		} else if (response.status == 409) {
-			alert("Member's Debt will exceed ₹500");
+			modalAlert(modalStore, "Member's Debt will exceed ₹500");
 		} else {
 			console.error('HTTP-Error: ' + response.status);
-			alert('Server Down!!');
+			modalAlert(modalStore, 'Server Down!!');
 		}
 	}
 
