@@ -25,7 +25,11 @@
 			});
 			if (response.status == 201) {
 				const books = await response.json();
-				modalAlert(modalStore, `successfully imported ${books.no_imported_books} books`);
+				if (books.no_imported_books <= 0) {
+					modalAlert(modalStore, `No new books available for specified query`);
+				} else {
+					modalAlert(modalStore, `successfully imported ${books.no_imported_books} books`);
+				}
 			} else {
 				modalAlert(modalStore, `server error: ${response.status}`);
 			}
