@@ -2,7 +2,8 @@
 
 **Run in order:**
 
-## Database
+## Database (AWS)
+URL: http://16.16.156.1:5050 (no https)
 ```
 cd database
 ```
@@ -10,7 +11,8 @@ cd database
 docker-compose up --build
 ```
 
-## Backend
+## Backend (AWS)
+URL https://16.16.156.1
 ```
 cd backend
 ```
@@ -23,7 +25,8 @@ flask db upgrade
 ```
 flask run
 ```
-## Frontend
+## Frontend (Netlify)
+URL https://frappe-library.netlify.app
 ```
 npm install
 ```
