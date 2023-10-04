@@ -37,7 +37,7 @@
 ## Running locally:
 **Run in order:**
 
-### Database
+### Database (AWS RDS)
 ```
 cd database
 ```
@@ -45,8 +45,8 @@ cd database
 docker-compose up --build
 ```
 
-### Backend (Render)
-- URL https://frappe-library-backend.onrender.com
+### Backend (AWS EC2)
+- URL https://16.16.156.1
 ```
 cd backend
 ```
