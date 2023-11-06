@@ -24,9 +24,11 @@
 	}
 
 	function nextPage() {
-		books = [];
-		pageNumber++;
-		fetchBooks();
+		if (books.length == 10) {
+			books = [];
+			pageNumber++;
+			fetchBooks();
+		}
 	}
 
 	function previousPage() {
