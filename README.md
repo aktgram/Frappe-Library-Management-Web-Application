@@ -12,16 +12,13 @@ test commit
 + CRUD operations implemented through Forms within Modals.
 
 ## 📺 Demo
-Test Removal of Demos for Vibinex extension
+Testing Again
 
 ## 📊 Data Design
 ![DataDesign](./design/data_design_frappe_library.png)
 
 ## 📦 Libraries used
-**Frontend**
-- Svelte and Sveltkit
-- Tailwind CSS
-- Skeleton UI Toolkit for Svelte
+Removed random stuff
 
 **Backend**
 - Flask
